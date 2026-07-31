@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Plano de Exercícios Git - Situações Reais</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    margin: 0;
+    padding: 24px 16px;
+  }
+  h1 {
+    font-size: 20px;
+    color: #f8fafc;
+    margin-bottom: 4px;
+  }
+  .subtitle {
+    color: #94a3b8;
+    font-size: 14px;
+    margin-bottom: 30px;
+  }
+  .week {
+    margin-bottom: 26px;
+    border-radius: 12px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    overflow: hidden;
+  }
+  .week-header {
+    padding: 12px 18px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #f8fafc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .week1 .week-header { background: #0c4a6e; }
+  .week2 .week-header { background: #064e3b; }
+  .week3 .week-header { background: #78350f; }
+  .week4 .week-header { background: #4c1d95; }
+  .week0 .week-header { background: #7f1d1d; }
+
+  .week-badge {
+    font-size: 11px;
+    font-weight: 600;
+    background: rgba(255,255,255,0.15);
+    padding: 3px 9px;
+    border-radius: 20px;
+  }
+  .exercise {
+    padding: 14px 18px;
+    border-top: 1px solid #334155;
+  }
+  .ex-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #f1f5f9;
+    margin: 0 0 4px 0;
+  }
+  .ex-desc {
+    font-size: 13px;
+    color: #cbd5e1;
+    line-height: 1.5;
+    margin: 0 0 6px 0;
+  }
+  code {
+    background: #0f172a;
+    padding: 1px 6px;
+    border-radius: 5px;
+    color: #93c5fd;
+    font-size: 12px;
+  }
+  .goal {
+    font-size: 12px;
+    color: #86efac;
+    background: #052e1a;
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 6px;
+    margin-top: 4px;
+  }
+  .videos {
+    padding: 12px 18px 16px 18px;
+    border-top: 1px solid #334155;
+    background: #172033;
+  }
+  .videos-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #94a3b8;
+    letter-spacing: 0.4px;
+    margin-bottom: 8px;
+  }
+  .video-link {
+    display: block;
+    font-size: 12.5px;
+    color: #7dd3fc;
+    text-decoration: none;
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+  .video-link span {
+    color: #64748b;
+  }
+  .footer-note {
+    margin-top: 28px;
+    padding: 14px 16px;
+    background: #1e293b;
+    border-left: 4px solid #38bdf8;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #bae6fd;
+  }
+
+  /* --- Esquemático de conflito --- */
+  h2.section-title {
+    font-size: 17px;
+    color: #f8fafc;
+    margin: 0 0 4px 0;
+  }
+  .section-subtitle {
+    color: #94a3b8;
+    font-size: 13.5px;
+    margin-bottom: 20px;
+  }
+  .track {
+    position: relative;
+    padding-left: 28px;
+    border-left: 3px solid #334155;
+    margin-left: 10px;
+    margin-bottom: 36px;
+  }
+  .step {
+    position: relative;
+    margin-bottom: 18px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    background: #1e293b;
+    border: 1px solid #334155;
+  }
+  .step::before {
+    content: "";
+    position: absolute;
+    left: -35px;
+    top: 18px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #475569;
+    border: 3px solid #0f172a;
+  }
+  .step.main::before { background: #38bdf8; }
+  .step.b2::before { background: #34d399; }
+  .step.b3::before { background: #fbbf24; }
+  .step.conflict::before { background: #f87171; }
+  .step.merge::before { background: #a78bfa; }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin-bottom: 6px;
+    letter-spacing: 0.3px;
+  }
+  .tag.main { background: #0c4a6e; color: #7dd3fc; }
+  .tag.b2 { background: #064e3b; color: #6ee7b7; }
+  .tag.b3 { background: #78350f; color: #fcd34d; }
+  .tag.conflict { background: #7f1d1d; color: #fca5a5; }
+  .tag.merge { background: #4c1d95; color: #c4b5fd; }
+
+  .step-title {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #f1f5f9;
+    margin: 0 0 4px 0;
+  }
+  .step p.step-desc {
+    margin: 0;
+    font-size: 13px;
+    color: #cbd5e1;
+    line-height: 1.5;
+  }
+  .conflict-callout {
+    padding: 14px 16px;
+    background: #1e293b;
+    border-left: 4px solid #f87171;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #fecaca;
+    margin-bottom: 36px;
+  }
+  hr.divider {
+    border: none;
+    border-top: 1px solid #334155;
+    margin: 0 0 30px 0;
+  }
+</style>
+</head>
+<body>
+
+<h1>🗓️ Plano de Exercícios Git — Situações do Dia a Dia</h1>
+<div class="subtitle">Sequência progressiva pra praticar em projetos pessoais, do básico ao realista</div>
+
+<div class="week week0">
+  <div class="week-header">
+    <span>Bloco 1 — 🌿 Simulando conflito real: tabela 2 vs tabela 3</span>
+    <span class="week-badge">Fluxo guiado</span>
+  </div>
+  <div class="exercise">
+    <p class="ex-desc">Fluxo pra vivenciar rebase/merge de verdade em projeto pessoal.</p>
+  </div>
+  <div class="exercise">
+    <div class="track">
+
+      <div class="step main">
+        <span class="tag main">MAIN</span>
+        <p class="step-title">1. Ponto de partida</p>
+        <p class="step-desc">A <code>main</code> está com o projeto inicial das camadas.</p>
+      </div>
+
+      <div class="step b2">
+        <span class="tag b2">BRANCH TABELA-2</span>
+        <p class="step-title">2. Cria branch a partir da main</p>
+        <p class="step-desc">Você cria <code>feature/tabela-2</code> baseada na main atual e começa a trabalhar nela.</p>
+      </div>
+
+      <div class="step b3">
+        <span class="tag b3">BRANCH TABELA-3</span>
+        <p class="step-title">3. Cria a segunda branch (ainda sem mergear a primeira)</p>
+        <p class="step-desc">Antes de abrir o PR da tabela-2, você já cria <code>feature/tabela-3</code> — também a partir da main, que nesse momento ainda não tem as mudanças da tabela-2.</p>
+      </div>
+
+      <div class="step merge">
+        <span class="tag merge">MERGE</span>
+        <p class="step-title">4. Mergeia a tabela-2 primeiro</p>
+        <p class="step-desc">Você finaliza <code>feature/tabela-2</code>, abre o PR e faz o merge na <code>main</code>. Agora a main está "à frente" da branch tabela-3.</p>
+      </div>
+
+      <div class="step conflict">
+        <span class="tag conflict">DIVERGÊNCIA</span>
+        <p class="step-title">5. Tenta abrir o PR da tabela-3</p>
+        <p class="step-desc">A branch <code>feature/tabela-3</code> ainda está baseada na main "velha" — ela não tem as mudanças da tabela-2. Se mexeu no mesmo arquivo, isso gera conflito.</p>
+      </div>
+
+      <div class="step conflict">
+        <span class="tag conflict">RESOLVE</span>
+        <p class="step-title">6. Traz o estado novo da main pra sua branch</p>
+        <p class="step-desc">Você roda <code>git pull origin main</code> (merge) ou <code>git rebase main</code> dentro da <code>feature/tabela-3</code>, resolve os conflitos manualmente, e só depois abre o PR.</p>
+      </div>
+
+    </div>
+
+    <div class="conflict-callout">
+      <strong>Por que fazer isso de propósito:</strong> esse é exatamente o tipo de situação que acontece em time real — duas pessoas mexendo em branches diferentes, uma mergeia primeiro, a outra precisa atualizar a branch antes de finalizar. Treinar isso sozinho, num projeto de baixo risco, é o jeito mais seguro de aprender antes de passar por isso em produção.
+    </div>
+  </div>
+</div>
+
+<h2 class="section-title">🗓️ Plano de exercícios — 4 blocos práticos</h2>
+<div class="section-subtitle">Do básico ao realista, cada bloco com vídeos sugeridos</div>
+
+
+<div class="week week1">
+  <div class="week-header">
+    <span>Bloco 2 — Fundamentos do fluxo</span>
+    <span class="week-badge">Aquecimento</span>
+  </div>
+  <div class="exercise">
+    <p class="ex-title">1. Amend — corrigir o último commit</p>
+    <p class="ex-desc">Esqueça um arquivo no commit ou erre a mensagem de propósito, depois use <code>git commit --amend</code> pra corrigir antes de subir.</p>
+    <span class="goal">Objetivo: perder o medo de mexer no commit mais recente</span>
+  </div>
+  <div class="exercise">
+    <p class="ex-title">2. Stash — pausar um trabalho no meio</p>
+    <p class="ex-desc">No meio de uma alteração, simule uma urgência: rode <code>git stash</code>, troque de branch, resolva algo, volte e dê <code>git stash pop</code>.</p>
+    <span class="goal">Objetivo: trocar de contexto sem perder nem misturar trabalho</span>
+  </div>
+  <div class="videos">
+    <div class="videos-label">📺 VÍDEOS SUGERIDOS</div>
+    <a class="video-link" href="https://www.youtube.com/watch?v=fOQ0ll7Vy5E">Stash, Amend e Reset — Root <span>(cobre os dois comandos deste bloco juntos)</span></a>
+    <a class="video-link" href="https://www.youtube.com/watch?v=IDGpkcG2IvM">Git Stash e Git Amend — Coffops <span>(explicação direta com exemplos)</span></a>
+  </div>
+</div>
+
+<div class="week week2">
+  <div class="week-header">
+    <span>Bloco 3 — Corrigindo erros</span>
+    <span class="week-badge">Recuperação</span>
+  </div>
+  <div class="exercise">
+    <p class="ex-title">3. Commit direto na main sem querer</p>
+    <p class="ex-desc">Commite direto na <code>main</code> por engano. Depois resgate: crie uma branch nova a partir desse ponto e volte a main pro estado anterior.</p>
+    <span class="goal">Objetivo: saber resgatar trabalho sem perder nada</span>
+  </div>
+  <div class="exercise">
+    <p class="ex-title">4. Revert vs reset</p>
+    <p class="ex-desc">Suba um commit "errado" de propósito. Pratique desfazer com <code>git revert</code> (seguro, histórico preservado) e, em outro cenário local, com <code>git reset --soft</code>.</p>
+    <span class="goal">Objetivo: entender quando cada um é seguro de usar</span>
+  </div>
+  <div class="exercise">
+    <p class="ex-title">5. Commit "sujo" demais</p>
+    <p class="ex-desc">Misture três mudanças diferentes num commit só. Depois separe com <code>git reset --soft HEAD~1</code> e recomite em partes organizadas.</p>
+    <span class="goal">Objetivo: aprender a quebrar commits em unidades lógicas</span>
+  </div>
+  <div class="videos">
+    <div class="videos-label">📺 VÍDEOS SUGERIDOS</div>
+    <a class="video-link" href="https://www.youtube.com/watch?v=fOQ0ll7Vy5E">Stash, Amend e Reset — Root <span>(mostra reset na prática pra desfazer commits)</span></a>
+  </div>
+</div>
+
+<div class="week week3">
+  <div class="week-header">
+    <span>Bloco 4 — Conflitos reais</span>
+    <span class="week-badge">O ponto principal</span>
+  </div>
+  <div class="exercise">
+    <p class="ex-title">6. Branch desatualizada</p>
+    <p class="ex-desc">Comece a trabalhar numa branch sem dar pull antes. No meio do caminho, perceba que a main avançou e precise ratrapar com <code>git rebase main</code>.</p>
+    <span class="goal">Objetivo: sentir a dor de trabalhar "atrasado"</span>
+  </div>
+  <div class="exercise">
+    <p class="ex-title">7. Conflito real (tabela-2 vs tabela-3)</p>
+    <p class="ex-desc">O cenário que já montamos: duas branches a partir do mesmo ponto, uma mergeia primeiro, a outra precisa atualizar e resolver conflito antes do PR.</p>
+    <span class="goal">Objetivo: resolver conflito de verdade, não só ler sobre ele</span>
+  </div>
+  <div class="exercise">
+    <p class="ex-title">8. Conflito em arquivo de config (.yml)</p>
+    <p class="ex-desc">Repita o conflito, mas agora num <code>sources.yml</code> ou schema do dbt. Conflito estrutural é mais sutil que em código.</p>
+    <span class="goal">Objetivo: praticar conflito no tipo de arquivo comum em dados</span>
+  </div>
+  <div class="exercise">
+    <p class="ex-title">9. A regra de ouro do rebase</p>
+    <p class="ex-desc">Entenda por que <code>git rebase</code> nunca deve ser feito em branch pública (compartilhada por outras pessoas, como <code>main</code> ou <code>development</code>). Rebase reescreve o histórico e muda os hashes dos commits — se alguém já baseou trabalho nesses commits, um <code>push --force</code> depois do rebase pode sobrescrever ou até apagar o trabalho de colegas. Rebase só é seguro na sua branch pessoal, que mais ninguém está usando.</p>
+    <span class="goal">Objetivo: saber quando rebase é seguro e quando é perigoso</span>
+  </div>
+  <div class="exercise">
+    <p class="ex-title">10. Backup de branch antes de operação arriscada</p>
+    <p class="ex-desc">Antes de rodar um rebase ou reset que você não tem 100% de certeza, crie uma cópia de segurança: <code>git checkout -b nome-backup</code> a partir da sua branch atual, volte pra branch original e só então aplique a operação. Se algo sair errado, o backup está intacto.</p>
+    <span class="goal">Objetivo: ter uma rede de segurança pra experimentar sem medo</span>
+  </div>
+  <div class="videos">
+    <div class="videos-label">📺 VÍDEOS SUGERIDOS</div>
+    <a class="video-link" href="https://www.youtube.com/watch?v=_LOLnJJG1-c">Resolvendo conflitos em merge — Git Essencial #09</a>
+    <a class="video-link" href="https://www.youtube.com/watch?v=-xxhkAPJZPY">Merge conflicts: como resolver do jeito mais simples <span>(atualizado)</span></a>
+    <a class="video-link" href="https://www.youtube.com/watch?v=LpeI6-cPlK4">Git Merge e Git Rebase — Fernanda Kipper <span>(diferença entre os dois na prática)</span></a>
+    <a class="video-link" href="https://www.treinaweb.com.br/blog/git-merge-e-git-rebase-quando-usa-los">Git Merge e Git Rebase: quando usá-los? — TreinaWeb <span>(artigo sobre a Golden Rule of Rebasing)</span></a>
+  </div>
+</div>
+
+<div class="week week4">
+  <div class="week-header">
+    <span>Bloco 5 — Organização avançada</span>
+    <span class="week-badge">Polimento</span>
+  </div>
+  <div class="exercise">
+    <p class="ex-title">11. Squash antes do PR</p>
+    <p class="ex-desc">Faça 6-8 commits pequenos e "sujos" numa branch (tipo "ajuste", "ajuste2"). Antes do PR, use <code>git rebase -i</code> pra juntar tudo num commit limpo.</p>
+    <span class="goal">Objetivo: entregar histórico organizado pro revisor</span>
+  </div>
+  <div class="exercise">
+    <p class="ex-title">12. Cherry-pick</p>
+    <p class="ex-desc">Tenha uma correção específica numa branch e traga só ela pra outra branch, sem trazer o resto do trabalho, usando <code>git cherry-pick</code>.</p>
+    <span class="goal">Objetivo: mover mudanças pontuais entre branches</span>
+  </div>
+  <div class="exercise">
+    <p class="ex-title">13. Limpeza pós-merge</p>
+    <p class="ex-desc">Depois que um PR é aceito, delete a branch local e remota: <code>git branch -d nome</code> e <code>git push origin --delete nome</code>.</p>
+    <span class="goal">Objetivo: manter o repositório organizado, hábito de time</span>
+  </div>
+  <div class="videos">
+    <div class="videos-label">📺 VÍDEOS SUGERIDOS</div>
+    <a class="video-link" href="https://www.dio.me/articles/git-merge-rebase-cherry-pick-e-squash-bb4a53fef0cc">Git Merge, Rebase, Cherry-pick e Squash — Luis Ferreira (DIO) <span>(artigo com exemplos práticos de rebase -i)</span></a>
+    <a class="video-link" href="https://pt.wikiversity.org/wiki/Git_Avan%C3%A7ado">Git Avançado — Wikiversidade <span>(guia de rebase interativo em português)</span></a>
+  </div>
+</div>
+
+<div class="footer-note">
+  💡 Sugestão: documente cada exercício num arquivo <code>PRATICA.md</code> na própria branch — o comando usado, o que deu errado, como resolveu. Isso vira portfólio de aprendizado, não só treino.
+</div>
+
+</body>
+</html>
