@@ -178,9 +178,9 @@ Documentar esse tipo de decisão — por que você escolheu merge em vez de reba
 
 ---
 
-## Como usar o arquivo plano.html
+## Como usar o arquivo index.html que contem os exercícios praticos de dia a dia 
 
-Esse repositório inclui o `plano.html`, um material visual com os exercícios práticos de Git (conflitos, merge, rebase) mencionados na seção anterior. Para usa-lo é só acessar: 
+Esse repositório inclui o `index.html`, um material visual com os exercícios práticos de Git (conflitos, merge, rebase) mencionados na seção anterior. Para usa-lo é só acessar: https://alanasarah01.github.io/git-na-pratica/
 
 ---
 
